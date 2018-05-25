@@ -34,6 +34,13 @@
         </a>
       </li>
 
+      <li class="nav-item">
+        <a class="nav-link text-secondary" href="/roles">
+          <i class="fa fa-info"></i>
+          Roles
+        </a>
+      </li>
+      
     </ul>
   </div>
 </nav>
