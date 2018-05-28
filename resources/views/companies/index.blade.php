@@ -51,29 +51,39 @@
                     </td>
                     <td>
                       <a class="btn btn-primary" href="/companies/{{$company->id}}/edit">Edit</a> &nbsp;
-                      <!-- <form action="" method="DELETE" onsubmit="return confirm('Are you sure you want to submit?')">
-                {{ Form::submit('Delete') }}</td>
-                  
-                    </tr> -->
-                      <a 
-                          class="btn btn-danger"  
-                          href="#"
-                              onclick="
-                              var result = confirm('Are you sure do you want to delete the company?');
-                                  if( result ){
-                                          event.preventDefault();
-                                          document.getElementById('delete-form').submit();
-                                  }
-                                      "
-                                      >
-                              Delete
-                          </a>
+                      <button class="btn btn-danger" data-toggle="modal" data-target=".delete{{$company->id}}">Delete</button>
 
-                        <form id="delete-form" action="{{ route('companies.destroy', [$company->id]) }}" 
-                          method="POST" style="display: none;">
-                                  <input type="hidden" name="_method" value="delete">
-                                  @csrf
-                        </form>
+                      <!-- Modal -->
+                      <div class="modal fade bd-example-modal-lg delete{{$company->id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-md modal-dialog-centered">
+                          <div class="modal-content">
+
+                            <div class="modal-header bg-danger">
+                              <h6 class="modal-title text-white" id="exampleModalLabel">Delete company</h6>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+
+                            <div class="modal-body">
+                              Are you sure do you want to delete company?
+                            </div>
+
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                               <form id="delete-form" action="{{ route('companies.destroy', [$company->id]) }}" 
+                                method="POST">
+                                    <input type="hidden" name="_method" value="delete">
+                                        @csrf
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                              </form> 
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                      <!--  End modal -->
+
                     </td>
                   </tr>
                   @endforeach

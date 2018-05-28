@@ -74,7 +74,7 @@ class CompaniesController extends Controller
     public function show(Company $company)
     {
         //
-        
+
     }
 
     /**
@@ -137,20 +137,22 @@ class CompaniesController extends Controller
      * @param  \App\Company  $company
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Company $company)
+    public function destroy(Request $request, Company $company)
     {
         //
-        // $company = Company::find($company->id);
+        $company = Company::find($company->id);
 
-        // if ($company->delete()) {
-        //     return back()->with('success' , 'Company deleted successfully');
-        // }
-        // return back()->withInput()->with('errors', 'Error creating new company');
+        if ($company->delete()) {
+            return back()->with('success' , 'Company deleted successfully');
+        }
+        return back()->withInput()->with('errors', 'Error creating new company');
+        
         if (Auth::check()) { // authentication check if session started
            
             dd($company->id);
             
         }
         return back()->withInput()->with('errors', 'Login first.');
+
     }
 }

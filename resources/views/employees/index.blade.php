@@ -37,7 +37,7 @@
                     <th class="text-center">Address</th>
                     <th class="text-center">Company</th>
                     <th class="text-center">Status</th>
-                    <th class="text-center" width="120px">Action</th>
+                    <th class="text-center" width="200px">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -62,26 +62,38 @@
                     <td>
                       <a class="btn btn-success" href="/employees/{{$employee->id}}">View</a> &nbsp;
                       <a class="btn btn-primary" href="/employees/{{$employee->id}}/edit">Edit</a> &nbsp;
-                      
-                      <!-- <a 
-                        class="btn btn-danger"  
-                        href="#"
-                            onclick="
-                            var result = confirm('Are you sure do you want to delete the employee?');
-                                if( result ){
-                                        event.preventDefault();
-                                        document.getElementById('delete-form').submit();
-                                }
-                                    "
-                                    >
-                            Delete
-                        </a>
+                      <button class="btn btn-danger" data-toggle="modal" data-target=".delete{{$employee->id}}">Delete</button>
 
-                        <form id="delete-form" action="{{ route('employees.destroy', [$employee->id]) }}" 
-                          method="POST" style="display: none;">
-                                <input type="hidden" name="_method" value="delete">
-                                @csrf
-                      </form> -->
+                      <!-- Modal -->
+                      <div class="modal fade bd-example-modal-lg delete{{$employee->id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-md modal-dialog-centered">
+                          <div class="modal-content">
+
+                            <div class="modal-header bg-danger">
+                              <h6 class="modal-title text-white" id="exampleModalLabel">Delete employee</h6>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+
+                            <div class="modal-body">
+                              Are you sure do you want to delete employee?
+                            </div>
+
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                               <form id="delete-form" action="{{ route('employees.destroy', [$employee->id]) }}" 
+                                method="POST">
+                                    <input type="hidden" name="_method" value="delete">
+                                        @csrf
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                              </form> 
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                      <!--  End modal -->
 
                     </td>
                   </tr>
