@@ -20,8 +20,8 @@ class CreateLogsTable extends Migration
                 $table->integer('employee_id')->unsigned();
                 $table->foreign('employee_id')->references('id')->on('employees');
 
-                $table->dateTime('time_in');
-                $table->dateTime('time_out');
+                $table->dateTime('time_in')->nullable();
+                $table->dateTime('time_out')->nullable();
                 $table->softDeletes();
                 $table->timestamps();
             });

@@ -16,8 +16,8 @@
             <h1 class="h2">Roles</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
               <div class="btn-group mr-2">
-                <a href="/user_roles" class="btn btn-sm btn-outline-success p-3">View Role User</a>
                 <button class="btn btn-sm btn-outline-primary p-3" data-toggle="modal" data-target=".add-new-role">Add New Role</button>
+                <a href="/user_roles" class="btn btn-sm btn-outline-success p-3">View Role User</a>
               </div>
             </div>
           </div>
@@ -91,8 +91,11 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
-          <div class="modal-header">
+          <div class="modal-header bg-primary text-white">
             <h5 class="modal-title" id="exampleModalLabel">Add new role</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
 
           <div class="modal-body">

@@ -1,4 +1,4 @@
-<?php
+	<?php
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +18,11 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+//monitor
 Route::get('/monitor', 'LogsController@attendance_monitor')->name('monitor');
+Route::post('/time_in_out', 'LogsController@timeInOut')->name('time_in_out');
+
 
 
 Route::resource('companies', 'CompaniesController');
@@ -41,6 +45,7 @@ Route::put('/edit_role_user', 'RolesController@editRoleUser')->name('edit_role_u
 Route::post('/import_csv_companies', 'CompaniesController@importCsvCompanies')->name('import_csv_companies');
 Route::post('/import_process_companies', 'CompaniesController@processImportCompanies')->name('import_process_companies');
 Route::get('/export_csv_companies', 'CompaniesController@exportCsvCompanies')->name('export_process_companies');
+
 
 
 

@@ -112,11 +112,11 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
-          <div class="modal-header">
+          <div class="modal-header bg-primary text-white">
             <h5 class="modal-title" id="exampleModalLabel">Add new employee</h5>
-            <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
-            </button> -->
+            </button>
             <label class="switch">
               <input type="checkbox">
               <span class="slider round"></span>
@@ -210,8 +210,11 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
-          <div class="modal-header">
+          <div class="modal-header bg-success text-white">
             <h5 class="modal-title" id="exampleModalLabel">Import CSV</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
 
           <div class="modal-body">

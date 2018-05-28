@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Log;
 use Illuminate\Http\Request;
+use DB;
+use DateTime;
 
 class LogsController extends Controller
 {
@@ -85,5 +87,63 @@ class LogsController extends Controller
 
     public function attendance_monitor() {
         return view('monitor.index');
+    }
+
+    public function timeInOut(Request $request) {
+
+        //get datetime now
+        $dt = new DateTime();
+        $date = $dt->format('Y-m-d');
+        $time = $dt->format('H:m:s');
+
+        $datetime = $dt->format('Y-m-d H:m:s');
+
+        //if employee exist
+
+        $emp_exist = DB::table('employees')
+                        ->where('id', $request->input('employeeId'))
+                        ->get()
+                        ->first();
+        if ($emp_exist) { // employee exist
+            
+            //check if employee have a time in
+            $emp_log = DB::table('logs')
+                        ->where('employee_id', $request->input('employeeId'))
+                        ->get()
+                        ->first();
+            
+            if ($emp_log) { // have a time in
+                return "1";   
+            }
+            else { // no time in / TIME in starts here
+                
+                $emp_time_in = DB::table('logs')->insert([
+                                        'employee_id' => $request->input('employeeId'),
+                                        'time_in' => $datetime
+                                    ]);
+
+                if ($emp_time_in) {
+
+                    $employee = DB::table('employees')
+                                ->where('id', $request->input('employeeId'))
+                                ->get()
+                                ->first();
+                     return view('monitor.index', ['employee'=>$employee]);
+                }
+
+
+            }
+
+        }
+        else { // employee not exist
+            return back()->withInput()->with('errors', 'Employee not found.');
+        }
+
+        // if ($request->input('val_in_out') == 1) {
+        //     return "1";
+        // }
+        // else {
+        //     return "2";
+        // }
     }
 }
