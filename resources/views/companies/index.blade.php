@@ -16,7 +16,7 @@
             <div class="btn-toolbar mb-2 mb-md-0">
               <div class="btn-group mr-2">
                 <button class="btn btn-sm btn-outline-primary p-3" data-toggle="modal" data-target=".bd-example-modal-lg">Add New Company</button>
-                <button class="btn btn-sm btn-outline-success">Import</button>
+                <button class="btn btn-sm btn-outline-success" data-toggle="modal" data-target=".import-csv">Import CSV file</button>
               </div>
             </div>
           </div>
@@ -128,6 +128,45 @@
               <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 <button type="submit" class="btn btn-primary">Save</button>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!--  End modal -->
+
+    <!-- Modal / Import CSV file -->
+    <div class="modal fade bd-example-modal-lg import-csv" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Import CSV</h5>
+          </div>
+
+          <div class="modal-body">
+            <form method="post" action="{{ route('import_csv_companies') }}" enctype="multipart/form-data">
+              @csrf
+
+              <div class="col-md-12">
+                <div class="row">
+
+                  <div class="col-md-9">
+                    <div class="form-group">
+                      <label for="csv-file" class="col-form-label">File(.csv):</label>
+                      <input id="csv-file" type="file" class="form-control" name="import_file">
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Parse</button>
               </div>
 
             </form>

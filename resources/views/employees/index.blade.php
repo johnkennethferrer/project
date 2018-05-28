@@ -34,7 +34,7 @@
                     <th class="text-center">First name</th>
                     <th class="text-center">Middle name</th>
                     <th class="text-center">Gender</th>
-                    <th class="text-center">Address</th>
+                    <th class="text-center" width="150px">Address</th>
                     <th class="text-center">Company</th>
                     <th class="text-center">Status</th>
                     <th class="text-center" width="200px">Action</th>

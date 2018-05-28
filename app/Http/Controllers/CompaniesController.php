@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use DB;
 use Auth;
 use DataTables;
+use App\Csv;
 
 class CompaniesController extends Controller
 {
@@ -154,5 +155,63 @@ class CompaniesController extends Controller
         }
         return back()->withInput()->with('errors', 'Login first.');
 
+    }
+
+
+    public function importCsvCompanies(Request $request) {
+        //parsing csv or excel file
+        if (Auth::check()) { // authentication check if session started
+
+            if ($request->hasFile('import_file')) { // if not empty the post
+                $path = $request->file('import_file')->getRealPath(); // get the path of file
+                $data = array_map('str_getcsv', file($path));
+
+                if (count($data) > 0) { // if not empty the data
+                    $csv_data = array_slice($data,1); // slice data ($data,1) removed the first row
+
+                    $csv_data_file = Csv::create([ // store to the csv table db
+                        'csv_filename' => $request->file('import_file')->getClientOriginalName(), // get the original name of file
+                        'csv_data' => json_encode($csv_data) // save the data in json 
+                    ]);
+
+                } else { // if empty return back
+                    return redirect()->back();
+                }
+
+                return view('companies.import_fieldscompanies', compact('csv_data', 'csv_data_file'));
+                    
+            }
+
+        }
+        return back()->withInput()->with('errors', 'Login first.');
+    }
+
+    public function processImportCompanies(Request $request) {
+        //importing the parse data to table of employee
+        if (Auth::check()) { // authentication check if session started
+
+            $data = Csv::find($request->csv_data_file_id); //get the details of 
+            $csv_data = json_decode($data->csv_data, true); //decode the json data
+                
+                foreach ($csv_data as $companies) { // loop the data
+
+                    //insert to db employee
+                    $insertCompany = Company::create([  
+                        'name' =>             $companies[0],
+                        'description' =>      $companies[1],
+                        'status' =>           1,
+                        'user_id' =>          Auth::user()->id
+                    ]);
+
+                }
+
+                    if ($insertCompany) { // if success
+                        return redirect()->route('companies.index')->with('success' , 'Import successfully.');
+                    }
+
+                    return redirect()->route('companies.index')->with('errors', 'Import failed.');
+
+        }
+        return back()->withInput()->with('errors', 'Login first.');
     }
 }
