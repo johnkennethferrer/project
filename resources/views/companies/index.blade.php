@@ -51,20 +51,23 @@
                     </td>
                     <td>
                       <a class="btn btn-primary" href="/companies/{{$company->id}}/edit">Edit</a> &nbsp;
-                      
+                      <!-- <form action="" method="DELETE" onsubmit="return confirm('Are you sure you want to submit?')">
+                {{ Form::submit('Delete') }}</td>
+                  
+                    </tr> -->
                       <a 
-                        class="btn btn-danger"  
-                        href="#"
-                            onclick="
-                            var result = confirm('Are you sure do you want to delete the company?');
-                                if( result ){
-                                        event.preventDefault();
-                                        document.getElementById('delete-form').submit();
-                                }
-                                    "
-                                    >
-                            Delete
-                        </a>
+                          class="btn btn-danger"  
+                          href="#"
+                              onclick="
+                              var result = confirm('Are you sure do you want to delete the company?');
+                                  if( result ){
+                                          event.preventDefault();
+                                          document.getElementById('delete-form').submit();
+                                  }
+                                      "
+                                      >
+                              Delete
+                          </a>
 
                         <form id="delete-form" action="{{ route('companies.destroy', [$company->id]) }}" 
                           method="POST" style="display: none;">

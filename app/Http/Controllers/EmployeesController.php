@@ -13,6 +13,8 @@ use Excel;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Session\Store;
+use Response;
+use DateTime;
 
 
 class EmployeesController extends Controller
@@ -301,11 +303,11 @@ class EmployeesController extends Controller
                 $data = array_map('str_getcsv', file($path));
 
                 if (count($data) > 0) { // if not empty the data
-                    $csv_data = array_slice($data,0);
+                    $csv_data = array_slice($data,1); // slice data ($data,1) removed the first row
 
                     $csv_data_file = Csv::create([ // store to the csv table db
                         'csv_filename' => $request->file('import_file')->getClientOriginalName(), // get the original name of file
-                        'csv_data' => json_encode($data) // save the data in json 
+                        'csv_data' => json_encode($csv_data) // save the data in json 
                     ]);
 
                 } else { // if empty return back
@@ -372,6 +374,51 @@ class EmployeesController extends Controller
 
         }
         return back()->withInput()->with('errors', 'Login first.');
+    }
+
+    public function exportCsv(Request $request) {
+        $dt = new DateTime();
+        $datetime = $dt->format('Y-m-d_HiA');
+
+        $headers = array(
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=Employees".$datetime.".csv",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        );
+
+        $employees = DB::table('employees')
+                        ->select(DB::raw('employees.id, employees.first_name, employees.last_name, 
+                            employees.middle_name, employees.gender, employees.address, 
+                            employees.status, users.name as uname, companies.name as cname'))
+                        ->join('companies', 'employees.company_id','=','companies.id')
+                        ->join('users', 'employees.user_id', '=', 'users.id')
+                        ->get();
+        
+        $columns = array('ID','First name', 'Last name', 'Middle name', 'Gender', 'Address', 'Status', 'User added', 'Company');
+
+        $callback = function() use ($employees, $columns)
+        {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach($employees as $employee) {
+
+                //status convert           
+                $status = "";
+                if ($employee->status == 1) {
+                    $status = "Active";
+                }
+                else {
+                    $status = "Inactive";
+                }  
+
+                fputcsv($file, array($employee->id, $employee->first_name, $employee->last_name, $employee->middle_name, $employee->gender, $employee->address, $status, $employee->uname, $employee->cname));
+            }
+            fclose($file);
+        };
+        return Response::stream($callback, 200, $headers);
     }
 
     public function uploadImage(Request $request) {

@@ -30,6 +30,7 @@ Route::resource('roles', 'RolesController');
 Route::post('/import_parse', 'EmployeesController@parseImport')->name('import_parse');
 Route::post('/import_process', 'EmployeesController@processImport')->name('import_process');
 Route::post('/import_csv', 'EmployeesController@importCsv')->name('import_csv');
+Route::get('/export_csv', 'EmployeesController@exportCsv')->name('export_csv');
 Route::post('/upload_image', 'EmployeesController@uploadImage')->name('upload_image');
 
 //roles

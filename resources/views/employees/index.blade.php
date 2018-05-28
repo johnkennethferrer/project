@@ -18,6 +18,7 @@
               <div class="btn-group mr-2">
                 <button class="btn btn-sm btn-outline-primary p-3" data-toggle="modal" data-target=".add-new-employee">Add New Employee</button>
                 <button class="btn btn-sm btn-outline-success" data-toggle="modal" data-target=".import-csv">Import CSV file</button>
+                <a href="{{ route('export_csv') }}" target="_blank" class="btn btn-sm btn-outline-secondary pt-3">Export all to CSV file</a>
               </div>
             </div>
           </div>
