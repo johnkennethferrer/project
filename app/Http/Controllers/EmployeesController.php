@@ -332,25 +332,12 @@ class EmployeesController extends Controller
                 
                 foreach ($csv_data as $employee) { // loop the data
 
-                    //select from users
-                    $getUser = User::select('id') // get the id of user (convert)
-                                    ->where('name', $employee[6])
-                                    ->first();
-                    $userEmployee = $getUser->id;
-
                     //select from company
                     $getCompany = DB::table('companies') // get the if of companies (convert)
                                     ->select('id')
-                                    ->where('name', $employee[7])
+                                    ->where('name', $employee[5])
                                     ->first();
                     $companyEmployee = $getCompany->id;
-
-                    //if status active or inactive
-                    if ($employee[5] == "Active") { //convert result to integer value
-                        $status = 1;    
-                    } else {
-                        $status = 2;
-                    }
 
                     //insert to db employee
                     $insertEmployee = Employee::create([  
@@ -359,8 +346,8 @@ class EmployeesController extends Controller
                         'middle_name' =>    $employee[2],
                         'gender' =>         $employee[3],
                         'address' =>        $employee[4],
-                        'status' =>         $status,
-                        'user_id' =>        $userEmployee,
+                        'status' =>         1,
+                        'user_id' =>        Auth::user()->id,
                         'company_id' =>     $companyEmployee
                     ]);
 

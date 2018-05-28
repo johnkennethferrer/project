@@ -8,6 +8,10 @@ use DB;
 use Auth;
 use DataTables;
 use App\Csv;
+use DateTime;
+use Response;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CompaniesController extends Controller
 {
@@ -21,8 +25,15 @@ class CompaniesController extends Controller
         //
         if (Auth::check()) { // authentication check if session started
 
-            $companies = DB::table('companies')->get();
-            return view('companies.index', ['companies'=>$companies]);
+            $companies = DB::table('companies')
+                            ->whereNull('deleted_at')
+                            ->get();
+
+            $companiestrash = DB::table('companies')
+                            ->whereNotNull('deleted_at')
+                            ->get();
+
+            return view('companies.index', ['companies'=>$companies, 'companiestrash'=>$companiestrash]);
 
         }
         return back()->withInput()->with('errors', 'Login first.');
@@ -157,7 +168,6 @@ class CompaniesController extends Controller
 
     }
 
-
     public function importCsvCompanies(Request $request) {
         //parsing csv or excel file
         if (Auth::check()) { // authentication check if session started
@@ -214,4 +224,48 @@ class CompaniesController extends Controller
         }
         return back()->withInput()->with('errors', 'Login first.');
     }
+
+    public function exportCsvCompanies() {
+        $dt = new DateTime();
+        $datetime = $dt->format('Y-m-d_HiA');
+
+        $headers = array(
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=Companies".$datetime.".csv",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        );
+
+        $companies = DB::table('companies')
+                        ->select(DB::raw('companies.id, companies.name as cname, 
+                            companies.description, companies.status, users.name as uname'))
+                        ->join('users','companies.user_id','=','users.id')
+                        ->get();
+
+        $columns = array('ID','Name','Description','Status','User added');
+
+        $callback = function() use ($companies, $columns)
+        {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach($companies as $company) {
+
+                //status convert           
+                $status = "";
+                if ($company->status == 1) {
+                    $status = "Active";
+                }
+                else {
+                    $status = "Inactive";
+                }  
+
+                fputcsv($file, array($company->id, $company->cname, $company->description, $status, $company->uname));
+            }
+            fclose($file);
+        };
+        return Response::stream($callback, 200, $headers);
+    }
+
 }

@@ -15,8 +15,10 @@
             <h1 class="h2">Companies</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
               <div class="btn-group mr-2">
-                <button class="btn btn-sm btn-outline-primary p-3" data-toggle="modal" data-target=".bd-example-modal-lg">Add New Company</button>
+                <button class="btn btn-sm btn-outline-primary p-3" data-toggle="modal" data-target=".add-new-company">Add New Company</button>
                 <button class="btn btn-sm btn-outline-success" data-toggle="modal" data-target=".import-csv">Import CSV file</button>
+                <a href="{{ route('export_process_companies') }}" class="btn btn-sm btn-outline-secondary pt-3" target="_blank">Export all to CSV file</a>
+                <a href="" class="btn btn-sm btn-outline-warning pt-3" data-toggle="modal" data-target=".trash-companies">Trash (Deleted Companies)</a>
               </div>
             </div>
           </div>
@@ -97,7 +99,7 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal fade bd-example-modal-lg add-new-company" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
@@ -177,9 +179,102 @@
     </div>
     <!--  End modal -->
 
+
+    <!-- Modal TRASH -->
+    <div class="modal fade bd-example-modal-lg trash-companies" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Soft deleted companies</h5>
+
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            <!-- <button class="btn btn-primary">Permanently delete all</button> -->
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <table class="table table-striped table-sm" id="companiesTableTrash">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Company name</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach($companiestrash as $company)
+                  <tr>
+                    <td>{{ $company->id }}</td>
+                    <td>{{ $company->name }}</td>
+                    <td><textarea rows="3" class="form-control" readonly disabled>{{ $company->description }}</textarea></td>
+                    <td>
+                      <?php 
+                        if ($company->status == 1) {
+                          echo '<span>Active</span>';
+                        } else {
+                          echo '<span>Inactive</span>';
+                        }
+                       ?>
+                    </td>
+                    <td>
+                      <a class="btn btn-primary" href="">Restore</a> &nbsp;
+                      <button class="btn btn-danger" data-toggle="modal" data-target=".permanentdelete{{$company->id}}">Delete</button>
+
+                      <!-- Modal -->
+                      <div class="modal fade bd-example-modal-lg permanentdelete{{$company->id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-md modal-dialog-centered">
+                          <div class="modal-content">
+
+                            <div class="modal-header bg-danger">
+                              <h6 class="modal-title text-white" id="exampleModalLabel">Delete company</h6>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+
+                            <div class="modal-body">
+                              Are you sure do you want to permanently delete company?
+                            </div>
+
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                               <form id="delete-form" action="{{ route('companies.destroy', [$company->id]) }}" 
+                                method="POST">
+                                    <input type="hidden" name="_method" value="delete">
+                                        @csrf
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                              </form> 
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                      <!--  End modal -->
+
+                    </td>
+                  </tr>
+                  @endforeach
+                </tbody>
+              </table>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!--  End modal -->
+
     <script> 
       $(document).ready( function () {
           $('#companiesTable').DataTable();
+          $('#companiesTableTrash').DataTable();
       });
     </script>
 

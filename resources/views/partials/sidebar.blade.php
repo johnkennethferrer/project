@@ -40,6 +40,13 @@
           Roles
         </a>
       </li>
+
+      <li class="nav-item">
+        <a class="nav-link text-secondary" href="/users">
+          <i class="fa fa-user"></i>
+          Users
+        </a>
+      </li>
         
     </ul>
   </div>

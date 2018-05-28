@@ -3,10 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Employee extends Model
 {
     //
+    use SoftDeletes;
     protected $fillable = [
     	'first_name',
     	'middle_name',
@@ -17,6 +19,8 @@ class Employee extends Model
     	'user_id',
     	'company_id',
     ];
+
+    protected $dates = ['deleted_at'];
 
     // public function company() {
     //     return $this->belongsTo('App\Company');

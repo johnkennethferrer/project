@@ -35,11 +35,12 @@ Route::post('/upload_image', 'EmployeesController@uploadImage')->name('upload_im
 //roles
 Route::get('/user_roles', 'RolesController@userRoles')->name('user_roles');
 Route::post('/add_role_user', 'RolesController@addRoleUser')->name('add_role_user');
+Route::put('/edit_role_user', 'RolesController@editRoleUser')->name('edit_role_user');
 
 //companies
 Route::post('/import_csv_companies', 'CompaniesController@importCsvCompanies')->name('import_csv_companies');
 Route::post('/import_process_companies', 'CompaniesController@processImportCompanies')->name('import_process_companies');
-
+Route::get('/export_csv_companies', 'CompaniesController@exportCsvCompanies')->name('export_process_companies');
 
 
 

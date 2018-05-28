@@ -7,6 +7,7 @@ use App\User;
 use DB;
 use Auth;
 use Illuminate\Http\Request;
+use App\RoleUser;
 
 class RolesController extends Controller
 {
@@ -107,7 +108,7 @@ class RolesController extends Controller
             if ($role) {
                 return back()->with('success','Role update successfully');
             }
-            return back()->with('success','Error updating role');
+            return back()->with('errors','Error updating role');
         }
         return back()->with('errors','Login first');
     }
@@ -121,6 +122,15 @@ class RolesController extends Controller
     public function destroy(Role $role)
     {
         //
+
+        if (Auth::check()) {
+            
+            if (Role::find($role->id)->delete()) {
+                return back()->with('success','Role deleted successfully');
+            }
+
+            return back()->with('errors','Error deleting role');
+        }
     }
 
     public function userRoles()
@@ -134,8 +144,51 @@ class RolesController extends Controller
                             ->join('users', 'users.id', '=', 'role_user.user_id')
                             ->join('roles', 'roles.id', '=', 'role_user.role_id')
                             ->get();
-            return view('roles.user_roles',['roleusers' => $user_roles]);
+
+            $noroles = DB::table('users')
+                        ->select(DB::raw('users.id as id, users.name as name'))
+                        ->leftJoin('role_user','users.id', '=', 'role_user.user_id')
+                        ->where('role_id',null)
+                        ->get();
+
+            $roles = Role::all();
+
+            return view('roles.user_roles',['roleusers' => $user_roles, 'noroles' => $noroles, 'roles' => $roles ]);
         }
         return back()->with('errors','Login first');
+    }
+
+    public function addRoleUser(Request $request) {
+
+        if (Auth::check()) {
+            
+            $addrole = DB::table('role_user')->insert([
+                            'user_id' => $request->input('role_user_id'),
+                            'role_id' => $request->input('role_id')
+                        ]);
+
+            if ($addrole) {
+                 return back()->with('success','User added a role successfully');
+            }
+             return back()->with('errors','Error adding a role to the user.');
+
+        }
+        return back()->with('errors','Login first');
+    }
+
+    public function editRoleUser(Request $request, Role $role) {
+
+        if (Auth::check()) {
+            $editrole = DB::table('role_user')
+                        ->where('id', $request['role_user_id'])
+                        ->update([
+                            'role_id' => $request['role_id']
+                        ]);
+
+            if ($editrole) {
+                return back()->with('success','User role updated successfully');
+            }
+            return back()->with('errors','Error updating a role of user.');
+        }
     }
 }

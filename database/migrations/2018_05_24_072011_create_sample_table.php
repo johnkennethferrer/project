@@ -18,6 +18,7 @@ class CreateSampleTable extends Migration
             $table->string('fname');
             $table->string('lname');
             $table->string('username');
+            
             $table->timestamps();
         });
     }

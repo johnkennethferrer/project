@@ -27,6 +27,7 @@ class CreateEmployeesTable extends Migration
                 $table->foreign('user_id')->references('id')->on('users');
                 $table->integer('company_id')->unsigned();
                 $table->foreign('company_id')->references('id')->on('companies');
+                $table->softDeletes();
 
                 $table->timestamps();
             });

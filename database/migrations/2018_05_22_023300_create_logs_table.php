@@ -22,6 +22,7 @@ class CreateLogsTable extends Migration
 
                 $table->dateTime('time_in');
                 $table->dateTime('time_out');
+                $table->softDeletes();
                 $table->timestamps();
             });
         }

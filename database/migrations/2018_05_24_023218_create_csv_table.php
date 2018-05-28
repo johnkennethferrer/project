@@ -17,6 +17,7 @@ class CreateCsvTable extends Migration
             $table->increments('id');
             $table->string('csv_filename');
             $table->longText('csv_data');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
