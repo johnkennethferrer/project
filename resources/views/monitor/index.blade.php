@@ -29,16 +29,18 @@
 			<div class="col-md-12 border">
 
 				@if(empty($employee))
-					<img src=" {{ asset('storage/no_image.png') }}" class="form-control p-0" style="width:100%; height: 100%;">
+					<img src=" {{ asset('storage/no_image.png') }}" class="form-control p-0" id="defaultImage" style="width:100%; height: 100%;">
 				@else
 					<h1 class="text-center" id="employeeName">{{ $employee->last_name }}, {{ $employee->first_name}} {{ $employee->middle_name }}</h1>
-					<img src=" {{ asset('storage/') }}/{{ $employee->avatar }}" id="defaultImage" class="form-control p-0" id="employeeImage" style="width:100%; height: 100%;">
+					<img src=" {{ asset('storage/') }}/{{ $employee->avatar }}" class="form-control p-0" id="employeeImage" style="width:100%; height: 100%;">
 				@endif
 				<img src=" {{ asset('storage/no_image.png') }}" class="form-control p-0" id="removeImage" style="display:none; width:100%; height: 100%;">
 				
 				<h1 class="text-center"><strong><div id="time"></div></strong></h1>
 				<h2 class="text-center"><strong><div id="date"></div></strong></h2>
 				<br/>
+
+				
 
 				<br/>
 				<form method="post" action="{{ route('time_in_out') }}">		
@@ -53,22 +55,15 @@
 </div>
 
 <script type="text/javascript">
-  function showTime() {
-    var date = new Date(),
-        utc = new Date(Date.UTC(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate(),
-          date.getHours(),
-          date.getMinutes(),
-          date.getSeconds()
-        ));
-
-    document.getElementById('time').innerHTML = utc.toLocaleTimeString();
-    document.getElementById('date').innerHTML = utc.toLocaleDateString();
-  }
-
-  setInterval(showTime, 1000);
+	
+  <?php $today = getdate(); ?>
+	var date = new Date(Date.UTC(<?php echo $today['year'].",".$today['mon'].",".$today['mday'].",".$today['hours'].",".$today['minutes'].",".$today['seconds'] ?>));
+	document.getElementById("time").innerHTML = date.toLocaleTimeString();
+	setInterval(function() {
+		date.setSeconds(date.getSeconds() + 1);
+		document.getElementById("time").innerHTML = date.toLocaleTimeString();
+		document.getElementById('date').innerHTML = date.toLocaleDateString();
+	} ,1000);
 
   	function hideEmployee(){
   		$('#employeeImage').hide();
