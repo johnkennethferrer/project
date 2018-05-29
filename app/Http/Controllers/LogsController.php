@@ -121,7 +121,7 @@ class LogsController extends Controller
 
                     $emp_time_in = DB::table('logs')->insert([
                                         'employee_id' => $request->input('employeeId'),
-                                            'time_in' => $datetime
+                                            'time_in' => $request->input('datetime')
                                         ]);
 
                     if ($emp_time_in) {
@@ -151,7 +151,7 @@ class LogsController extends Controller
                     $emp_time_out = DB::table('logs')
                                         ->where('employee_id', $request->input('employeeId'))
                                         ->update([
-                                            'time_out' => $datetime
+                                            'time_out' => $request->input('datetime')
                                         ]);
 
                     if ($emp_time_out) {

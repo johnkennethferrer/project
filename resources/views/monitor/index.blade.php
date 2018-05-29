@@ -22,8 +22,8 @@
 
 			@include('partials.success')
 			@include('partials.errors')
-			
-			<h1 class="active" id="time-in" style="text-align: center; font-size: 60px;"><strong>Time-in</strong></h1>
+
+			<h1 class="" id="time-in" style="text-align: center; font-size: 60px;"><strong>Time-in</strong></h1>
 			<h1 class="" id="time-out" style="display:none; text-align: center; font-size: 60px;"><strong>Time-out</strong></h1>
 
 			<div class="col-md-12 border">
@@ -46,6 +46,7 @@
 				<form method="post" action="{{ route('time_in_out') }}">		
 					@csrf
 					<input type="hidden" name="val_in_out" value="1" id="time_in_out"> <!-- time in = 1 / time out = 2 -->
+					<input type="hidden" name="datetime" id="datetime" class="form-control">
 					<input type="text" name="employeeId" class="form-control-lg" placeholder="Employee ID" autofocus autocomplete="off" required>
 				</form>
 			</div>
@@ -55,7 +56,7 @@
 </div>
 
 <script type="text/javascript">
-	
+
   <?php $today = getdate(); ?>
 	var date = new Date(Date.UTC(<?php echo $today['year'].",".$today['mon'].",".$today['mday'].",".$today['hours'].",".$today['minutes'].",".$today['seconds'] ?>));
 	document.getElementById("time").innerHTML = date.toLocaleTimeString();
@@ -63,13 +64,39 @@
 		date.setSeconds(date.getSeconds() + 1);
 		document.getElementById("time").innerHTML = date.toLocaleTimeString();
 		document.getElementById('date').innerHTML = date.toLocaleDateString();
+
+		var dateval = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
+		var timeval = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+		$("#datetime").val(dateval + " " + timeval);
+
 	} ,1000);
+
+	var comparetime = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+
+	if (comparetime >= "12:00:00") {
+		$("#time-in").removeClass("active");
+    	$("#time-out").addClass("active");
+    	$('#time-in').hide();
+    	$('#time-out').show();
+    	$('#time_in_out').val("2");
+	}
+	else {
+		$("#time-out").removeClass("active");
+    	$("#time-in").addClass("active");
+    	$('#time-out').hide();
+    	$('#time-in').show();
+    	$('#time_in_out').val("1");
+	}
+
+
 
   	function hideEmployee(){
   		$('#employeeImage').hide();
   		$('#employeeName').hide();
   		$('#defaultImage').hide();
-		$('#removeImage').show();	
+		$('#removeImage').show();
+		<?php unset($employee); ?>
+		location.reload();	
 	}
 	setTimeout(hideEmployee, 20000);
 
