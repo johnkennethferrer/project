@@ -241,6 +241,7 @@ class CompaniesController extends Controller
                         ->select(DB::raw('companies.id, companies.name as cname, 
                             companies.description, companies.status, users.name as uname'))
                         ->join('users','companies.user_id','=','users.id')
+                        ->whereNull('deleted_at')
                         ->get();
 
         $columns = array('ID','Name','Description','Status','User added');

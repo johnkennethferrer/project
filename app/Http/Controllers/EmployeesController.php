@@ -36,12 +36,24 @@ class EmployeesController extends Controller
                                     employees.status, companies.name'
                                     ))
                             ->join('companies', 'employees.company_id', '=', 'companies.id')
+                            ->whereNull('employees.deleted_at')
                             ->get();
             $companies = DB::table('companies')
                             ->where('status',1)
+                            ->whereNull('deleted_at')
                             ->get();
 
-            return view('employees.index', ['employees' => $employees, 'companies' => $companies]);
+            $deletedemployees = DB::table('employees')
+                                ->select(DB::raw(
+                                        'employees.id, employees.last_name, employees.first_name,
+                                        employees.middle_name, employees.gender, employees.address,
+                                        employees.status, companies.name'
+                                        ))
+                                ->join('companies', 'employees.company_id', '=', 'companies.id')
+                                ->whereNotNull('employees.deleted_at')
+                                ->get();
+
+            return view('employees.index', ['employees' => $employees, 'companies' => $companies, 'deletedemployees' => $deletedemployees]);
         }
         return back()->withInput()->with('errors', 'Login first.');
     }
@@ -381,6 +393,7 @@ class EmployeesController extends Controller
                             employees.status, users.name as uname, companies.name as cname'))
                         ->join('companies', 'employees.company_id','=','companies.id')
                         ->join('users', 'employees.user_id', '=', 'users.id')
+                        ->whereNull('employees.deleted_at')
                         ->get();
         
         $columns = array('ID','First name', 'Last name', 'Middle name', 'Gender', 'Address', 'Status', 'User added', 'Company');

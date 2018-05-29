@@ -19,6 +19,7 @@
                 <button class="btn btn-sm btn-outline-primary p-3" data-toggle="modal" data-target=".add-new-employee">Add New Employee</button>
                 <button class="btn btn-sm btn-outline-success" data-toggle="modal" data-target=".import-csv">Import CSV file</button>
                 <a href="{{ route('export_csv') }}" target="_blank" class="btn btn-sm btn-outline-secondary pt-3">Export all to CSV file</a>
+                <button class="btn btn-sm btn-outline-warning" data-toggle="modal" data-target=".trashed">Trashed (Deleted employee/s)</button>
               </div>
             </div>
           </div>
@@ -247,9 +248,91 @@
     </div>
     <!--  End modal -->
 
+    <!-- Modal / Trashed -->
+    <div class="modal fade bd-example-modal-lg trashed" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+          <div class="modal-header bg-warning">
+            <h5 class="modal-title" id="exampleModalLabel">Trashed (Softdeleted employee/s)</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            
+            <table class="table table-striped table-sm" id="employeeTable2">
+                <thead>
+                  <tr>
+                    <th class="text-center">ID</th>
+                    <th class="text-center">Fullname</th>
+                    <th class="text-center">Company</th>
+                    <th class="text-center" width="200px">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach($deletedemployees as $employee)
+                  <tr>
+                    <td>{{ $employee->id }}</td>
+                    <td>{{ $employee->last_name }}, {{ $employee->first_name }} {{ $employee->middle_name }}</td>
+                    <td>{{ $employee->name }}</td>
+                    <td>
+                      <a class="btn btn-primary" href="">Restore</a> &nbsp;
+                      <button class="btn btn-danger" data-toggle="modal" data-target=".delete{{$employee->id}}">Delete</button>
+
+                      <!-- Modal -->
+                      <div class="modal fade bd-example-modal-lg delete{{$employee->id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-md modal-dialog-centered">
+                          <div class="modal-content">
+
+                            <div class="modal-header bg-danger">
+                              <h6 class="modal-title text-white" id="exampleModalLabel">Delete employee</h6>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+
+                            <div class="modal-body">
+                              Are you sure do you want to delete employee?
+                            </div>
+
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                               <form id="delete-form" action="{{ route('employees.destroy', [$employee->id]) }}" 
+                                method="POST">
+                                    <input type="hidden" name="_method" value="delete">
+                                        @csrf
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                              </form> 
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                      <!--  End modal -->
+
+                    </td>
+                  </tr>
+                  @endforeach
+                </tbody>
+              </table>
+
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!--  End modal -->
+
     <script> 
       $(document).ready( function () {
           $('#employeeTable').DataTable();
+          $('#employeeTable2').DataTable();
       });
     </script>
 @endsection

@@ -20,8 +20,14 @@ class RolesController extends Controller
     {
         //
         if (Auth::check()) {
-            $roles = Role::all();
-            return view('roles.index', ['roles' => $roles]);
+            $roles = Role::whereNull('deleted_at')
+                        ->get();
+
+            $deletedroles = DB::table('roles')
+                        ->whereNotNull('deleted_at')
+                        ->get();
+
+            return view('roles.index', ['roles' => $roles, 'deletedroles' => $deletedroles]);
         }
         return back()->with('errors','Login first');
         
@@ -126,7 +132,12 @@ class RolesController extends Controller
         if (Auth::check()) {
             
             if (Role::find($role->id)->delete()) {
-                return back()->with('success','Role deleted successfully');
+
+                if ($removeRoleuser = DB::table('role_user')
+                                    ->where('role_id', $role->id)->delete()) {
+                    return back()->with('success','Role deleted successfully');
+                }
+
             }
 
             return back()->with('errors','Error deleting role');
